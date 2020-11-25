@@ -1,0 +1,34 @@
+---
+title: "supermarket sales"
+authoer: "Mingwei Wu"
+date: "11/24/2020"
+output: html_notebook
+---
+
+##Import data
+```{r}
+sales<-read.csv("supermarket.csv",header = TRUE)
+head(sales) #check the data frame
+```
+###rename data frame
+```{r}
+library(tidyverse)
+library(dplyr)
+names(sales)
+data<-sales%>%
+  rename(Id=Invoice.ID,
+         Type=Customer.type,
+         Product=Product.line,
+         Price=Unit.price,
+         Tax=Tax.5.,
+         Percent=gross.margin.percentage,
+         Income=gross.income) #rename the column is convenient for next step
+```
+
+```{r}
+head(data)
+```
+
+
+
+
