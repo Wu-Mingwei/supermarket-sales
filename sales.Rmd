@@ -4,8 +4,27 @@ authoer: "Mingwei Wu"
 date: "11/24/2020"
 output: html_notebook
 ---
+## Data Description
+### Id: computer generated sales slip invoice indentification number
+### Branch: branch of supercenter (3 branches are avaliable identified by A, B and C)
+### City: Location of supercenters
+### Type: type of customers, recorded by members for customers using member card and normal for without member card
+### Gender: gender type of customer
+### Product: general item categorization groups - electronic accessories, fashion accessories, food and beverages, health and beauty, home and lifestyle, sports and travel
+### Price: price of each product in dollar
+### Quantity: numbers of products purchased by customer
+### Tax: 5% tax fee for customer buying
+### Total: total price including tax
+### Date: date for purchase (record available from Jan 2019 to March 2019)
+### Time: purchase time (10am to 8pm)
+### Payment: payment used by customer for purchase(3 methods are available - Cash, Credit card and Ewallet)
+### COGS: cost of goods sold
+### Gross income: gross income
+### Rating: customer stratification rating on their overall shopping experience (on a scale of 1 to 10)
 
-##Import data
+
+
+## Import data
 ```{r}
 sales<-read.csv("supermarket.csv",header = TRUE)
 head(sales) #check the data frame
@@ -21,13 +40,35 @@ data<-sales%>%
          Product=Product.line,
          Price=Unit.price,
          Tax=Tax.5.,
-         Percent=gross.margin.percentage,
-         Income=gross.income) #rename the column is convenient for next step
+         gross_percent=gross.margin.percentage,
+         gross_income=gross.income) #rename the column is convenient for next step
 ```
 
 ```{r}
-head(data)
+data$Date<-as.Date(data$Date,"%m/%d/%y")  #convert the character of Date to date type
 ```
+```{r}
+summary(data)
+```
+
+```{r}
+library(ggplot2)
+data%>%
+  ggplot(aes(Date,Total,color=Branch))+geom_point()+facet_wrap(~City) # Point graph display the relationship of Branch and City
+```
+
+```{r}
+data%>%
+  ggplot(aes(Payment,fill=Branch))+geom_bar()+ggtitle("Payment bar table and Branch in different city")+facet_grid(~City)
+```
+```{r}
+data%>%
+  ggplot(aes(Date,Total, color=Gender))+geom_point()+geom_smooth()+facet_wrap(~Type)+ggtitle("relationship of customer of type and gender graph table")
+```
+
+
+
+
 
 
 
