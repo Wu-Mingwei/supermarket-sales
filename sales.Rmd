@@ -26,7 +26,7 @@ output: pdf_document
 ## Import data
 ```{r}
 sales<-read.csv("supermarket.csv",header = TRUE)
-head(sales) #check the data frame
+head(sales) 
 ```
 ##rename data frame
 ```{r}
@@ -40,11 +40,11 @@ data<-sales%>%
          Price=Unit.price,
          Tax=Tax.5.,
          gross_percent=gross.margin.percentage,
-         gross_income=gross.income) #rename the column is convenient for next step
+         gross_income=gross.income) 
 ```
 
 ```{r}
-data$Date<-as.Date(data$Date,"%m/%d/%y")  #convert the character of Date to date type
+data$Date<-as.Date(data$Date,"%m/%d/%y")  
 ```
 ```{r}
 summary(data)
@@ -53,7 +53,7 @@ summary(data)
 ```{r}
 library(ggplot2)
 data%>%
-  ggplot(aes(Date,Total,color=Branch))+geom_point()+facet_wrap(~City) # Point graph display the relationship of Branch and City
+  ggplot(aes(Date,Total,color=Branch))+geom_point()+facet_wrap(~City) 
 ```
 ## The bar table shows the different payment method in secret cities. In Mandalay, the bar table shows Uniform. and Naypyitaw skewed right, and Yangon seems almost symmetric shapes
 ```{r}
@@ -80,13 +80,6 @@ data%>%
   ggplot(aes(Rating,fill=Product))+geom_boxplot(position="dodge")+facet_wrap(~Branch,nrow = 3)
 ```
 
-
-
-
-```{r}
-head(data)
-```
-
 ## Import sql library
 ```{r}
 library(sqldf)
@@ -94,23 +87,12 @@ sqldf("select *
       from data
       group by Id
       order by Rating desc, Total desc
-      limit 10")  # use sql code to arrange the data group by Id, then arrange descending by rating and total limit 10 obs
+      limit 10")  
 ```
+
 ```{r}
 sqldf(" select count(*)
       from data
       where Type == 'Member'
-      ") # counting 501 obs are Membership in 1000 obs in data frame
+      ") 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
