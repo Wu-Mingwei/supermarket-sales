@@ -1,26 +1,25 @@
 ---
 title: "supermarket sales"
-authoer: "Mingwei Wu"
-date: "11/24/2020"
-output: html_notebook
+author: "Mingwei Wu"
+output: pdf_document
 ---
-## Data Description
-### Id: computer generated sales slip invoice indentification number
-### Branch: branch of supercenter (3 branches are avaliable identified by A, B and C)
-### City: Location of supercenters
-### Type: type of customers, recorded by members for customers using member card and normal for without member card
-### Gender: gender type of customer
-### Product: general item categorization groups - electronic accessories, fashion accessories, food and beverages, health and beauty, home and lifestyle, sports and travel
-### Price: price of each product in dollar
-### Quantity: numbers of products purchased by customer
-### Tax: 5% tax fee for customer buying
-### Total: total price including tax
-### Date: date for purchase (record available from Jan 2019 to March 2019)
-### Time: purchase time (10am to 8pm)
-### Payment: payment used by customer for purchase(3 methods are available - Cash, Credit card and Ewallet)
-### COGS: cost of goods sold
-### Gross income: gross income
-### Rating: customer stratification rating on their overall shopping experience (on a scale of 1 to 10)
+# Data Description
+## Id: computer generated sales slip invoice indentification number
+## Branch: branch of supercenter (3 branches are avaliable identified by A, B and C)
+## City: Location of supercenters
+## Type: type of customers, recorded by members for customers using member card and normal for without member card
+## Gender: gender type of customer
+## Product: general item categorization groups - electronic accessories, fashion accessories, food and beverages, health and beauty, home and lifestyle, sports and travel
+## Price: price of each product in dollar
+## Quantity: numbers of products purchased by customer
+## Tax: 5% tax fee for customer buying
+## Total: total price including tax
+## Date: date for purchase (record available from Jan 2019 to March 2019)
+## Time: purchase time (10am to 8pm)
+## Payment: payment used by customer for purchase(3 methods are available - Cash, Credit card and Ewallet)
+## COGS: cost of goods sold
+## Gross income: gross income
+## Rating: customer stratification rating on their overall shopping experience (on a scale of 1 to 10)
 
 
 
@@ -29,7 +28,7 @@ output: html_notebook
 sales<-read.csv("supermarket.csv",header = TRUE)
 head(sales) #check the data frame
 ```
-###rename data frame
+##rename data frame
 ```{r}
 library(tidyverse)
 library(dplyr)
@@ -50,21 +49,63 @@ data$Date<-as.Date(data$Date,"%m/%d/%y")  #convert the character of Date to date
 ```{r}
 summary(data)
 ```
-
+## The attachment below obviously display the relationship between the city and branch. we can see the Branch A only shows in City, Yangon, Branch B in City, Mandalay, and the rest in Naypyitaw.
 ```{r}
 library(ggplot2)
 data%>%
   ggplot(aes(Date,Total,color=Branch))+geom_point()+facet_wrap(~City) # Point graph display the relationship of Branch and City
 ```
-
+## The bar table shows the different payment method in secret cities. In Mandalay, the bar table shows Uniform. and Naypyitaw skewed right, and Yangon seems almost symmetric shapes
 ```{r}
 data%>%
   ggplot(aes(Payment,fill=Branch))+geom_bar()+ggtitle("Payment bar table and Branch in different city")+facet_grid(~City)
 ```
+## The attachment is linear regression between the Gender and type of customers where they spend total with date.
 ```{r}
 data%>%
   ggplot(aes(Date,Total, color=Gender))+geom_point()+geom_smooth()+facet_wrap(~Type)+ggtitle("relationship of customer of type and gender graph table")
 ```
+```{r}
+data%>%
+  ggplot(aes(Date,Total, color=Product))+geom_point()+geom_smooth()
+```
+```{r}
+ggplot(data=data)+geom_bar(mapping= aes(x=Branch, fill=Product), position="dodge")
+```
+```{r}
+ggplot(data=data)+geom_density(mapping= aes(x=Rating,fill=Branch),alpha=0.3)
+```
+```{r}
+data%>%
+  ggplot(aes(Rating,fill=Product))+geom_boxplot(position="dodge")+facet_wrap(~Branch,nrow = 3)
+```
+
+
+
+
+```{r}
+head(data)
+```
+
+## Import sql library
+```{r}
+library(sqldf)
+sqldf("select * 
+      from data
+      group by Id
+      order by Rating desc, Total desc
+      limit 10")  # use sql code to arrange the data group by Id, then arrange descending by rating and total limit 10 obs
+```
+```{r}
+sqldf(" select count(*)
+      from data
+      where Type == 'Member'
+      ") # counting 501 obs are Membership in 1000 obs in data frame
+```
+
+
+
+
 
 
 
